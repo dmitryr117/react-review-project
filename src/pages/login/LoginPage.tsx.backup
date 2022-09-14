@@ -1,0 +1,75 @@
+/* eslint-disable max-lines-per-function */
+import React, { FC, useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../services';
+
+export const LoginPage: FC = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [upass, setUpass] = useState('');
+  const [progress, setProgress] = useState(false);
+  const { user, login, logout } = useContext(AuthContext);
+
+  const processLogin = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> => {
+    e.preventDefault();
+    setProgress(true);
+    const loggedIn = await login(email, upass);
+    if (loggedIn) {
+      console.log('Loged in user');
+      navigate('/about');
+    } else {
+      console.log('Invalid login');
+      setEmail('');
+      setUpass('');
+      setProgress(false);
+    }
+
+    // const response = await fetch('https://api.ptcore.test/login', {
+    //   method: 'post',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   credentials: 'include',
+    //   body: JSON.stringify({
+    //     email: email, // email@email.com
+    //     password: upass, // password
+    //   }),
+    // }).then((response) => {
+    //   // Add data to redux / context and redirect
+    //   // return response.json();
+    //   navigate('/about');
+    // });
+    // console.log(response);
+  };
+
+  if (progress) {
+    return <div>Log In Page</div>;
+  } else {
+    return (
+      <div>
+        <h2>login Page</h2>
+        <form onSubmit={processLogin}>
+          <label>Email:</label>
+          <input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
+            type="text"
+            value={email}
+            required
+          />
+          <label>Password</label>
+          <input
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setUpass(e.target.value)
+            }
+            type="password"
+            value={upass}
+            required
+          />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    );
+  }
+};

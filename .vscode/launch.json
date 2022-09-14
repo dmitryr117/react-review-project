@@ -1,0 +1,30 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Brave Debug",
+      "url": "http://client.ptcore.test",
+      "webRoot": "${workspaceFolder}",
+      "timeout": 20000,
+      "sourceMaps": true,
+      "breakOnLoad": true,
+      "runtimeExecutable": "/snap/bin/brave",
+      "runtimeArgs": [
+        "--new-window",
+        "--incognito",
+        "--user-data-dir=${workspaceFolder}/chrome-profiles/ReactProfile",
+        "--remote-debugging-port=9222"
+      ],
+      "sourceMapPathOverrides": {
+        // requires inline-source-map in webpack.config.js for devtool
+        // "browser-path": "web-root path"
+        "/app/ptcore/*": "${webRoot}/*"
+      }
+    }
+  ]
+}
