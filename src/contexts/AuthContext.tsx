@@ -1,6 +1,6 @@
 /* eslint-disable max-lines-per-function */
 import React, { createContext, useState } from 'react';
-import { ContextProviderPropsInterface } from '../../interfaces';
+import { ContextProviderPropsInterface } from '../interfaces';
 
 interface UserContextInterface {
   uid: number;
@@ -15,21 +15,21 @@ interface ResponseDtoInterface {
 
 interface AuthContextInterface {
   user: UserContextInterface | null;
-  login(email: string, upass: string): Promise<boolean>;
-  logout(): Promise<boolean>;
+  login(email: string, upass: string): Promise<void>;
+  logout(): Promise<void>;
 }
 
-export const AuthContext = createContext<AuthContextInterface>({
+export const AuthContext = createContext<AuthContextInterface | null>({
   user: null,
-  login: async () => false,
-  logout: async () => false,
+  login: async () => undefined,
+  logout: async () => undefined,
 });
 
 export const AuthContextProvider = ({
   children,
 }: ContextProviderPropsInterface) => {
   const [user, setAuth] = useState<UserContextInterface | null>(null);
-  const login = async (email: string, upass: string): Promise<boolean> => {
+  const login = async (email: string, upass: string): Promise<void> => {
     let data: ResponseDtoInterface | null = null;
     try {
       const response = await fetch('https://api.ptcore.test/login', {
@@ -44,13 +44,11 @@ export const AuthContextProvider = ({
       data = JSON.parse(await response.json());
     } catch (e: any) {
       // can add behavior to handle bad connection
-      return false;
+      console.error('Error: ', e);
     }
     if (data && data.username && data.uid) {
       setAuth({ uid: data.uid, username: data.username });
-      return true;
     }
-    return false;
   };
 
   const logout = async () => {
@@ -62,10 +60,8 @@ export const AuthContextProvider = ({
       });
     } catch (e: any) {
       // can add behavior to handle bad connection
-      return false;
     }
     setAuth(null);
-    return true;
   };
 
   return (

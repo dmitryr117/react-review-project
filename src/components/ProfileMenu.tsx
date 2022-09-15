@@ -1,16 +1,16 @@
 import React, { FC, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../services';
+import { AuthContext } from '../contexts';
 
 export const ProfileMenu: FC = () => {
   const navigate = useNavigate();
-  const { user, logout } = useContext(AuthContext);
+  const auth = useContext(AuthContext);
   const logOut = async () => {
-    await logout();
+    await auth?.logout();
     navigate('/');
   };
 
-  if (user && user?.username) {
+  if (auth && auth.user) {
     return (
       <>
         <Link to="/profile">Profile</Link>

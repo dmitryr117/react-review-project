@@ -1,5 +1,18 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
+import EditProfilePic from '../../components/EditProfilePic';
+import { ProfilePic } from '../../components/ProfilePic';
 
 export const ProfilePage: FC = () => {
-  return <div>Profile Page</div>;
+  const [editPicture, setEditPicture] = useState(false);
+
+  return (
+    <div>
+      {editPicture ? (
+        <EditProfilePic changeFcn={setEditPicture} />
+      ) : (
+        <ProfilePic changeFcn={setEditPicture} />
+      )}
+      Profile Page
+    </div>
+  );
 };

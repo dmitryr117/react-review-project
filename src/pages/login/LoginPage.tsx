@@ -1,22 +1,18 @@
 /* eslint-disable max-lines-per-function */
 import React, { FC, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, loginUser, authSelector } from '../../redux';
+import { AuthContext } from '../../contexts';
 
 export const LoginPage: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const authState = useSelector(authSelector);
+  const authState = useContext(AuthContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [upass, setUpass] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (authState.isLoggedIn && authState.user) {
+    if (authState && authState.user) {
       navigate('/profile');
-    } else {
-      console.log('No User');
     }
   }, [authState]);
 
@@ -26,13 +22,8 @@ export const LoginPage: FC = () => {
   ): Promise<void> => {
     e.preventDefault();
     setLoading(true);
-    try {
-      await dispatch(loginUser({ email, upass }));
-    } catch (err: any) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
+    authState?.login(email, upass);
+    setLoading(false);
     console.log('done');
   };
 
